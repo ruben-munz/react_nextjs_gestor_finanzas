@@ -12,6 +12,8 @@ export class GetAccountsUseCase {
       type: acc.type,
       typeLabel: acc.typeLabel,
       bank: acc.bank,
+      accountNumber: acc.accountNumber,
+      lastFourDigits: acc.lastFourDigits,
       balanceCents: acc.balance.minorUnits,
       balanceDecimal: acc.balance.toDecimal(),
       balanceFormatted: acc.balance.format(),

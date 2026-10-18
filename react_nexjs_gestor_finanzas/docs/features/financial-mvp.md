@@ -8,7 +8,7 @@ Proporcionar una plataforma integral de gestión de patrimonio personal e invers
 
 ## 2. Modelo de Dominio e Invariantes
 - **`Money`**: Opera en céntimos enteros (`minorUnits`) con validación `Number.isSafeInteger` y reparto exacto de restos (`allocate`).
-- **`Account`**: Representa cuentas corrientes (`CHECKING`), ahorro (`SAVINGS`) y efectivo (`CASH`), exponiendo transiciones inmutables `credit(Money)` y `debit(Money)`.
+- **`Account`**: Representa cuentas corrientes (`CHECKING`), ahorro (`SAVINGS`) y efectivo (`CASH`), incluyendo el número de cuenta (`accountNumber`), extracción de los últimos 4 dígitos (`lastFourDigits`) y transiciones inmutables `credit(Money)` y `debit(Money)`.
 - **`Transaction`**: Valida `amount.minorUnits > 0` y estado `POSTED | VOID`.
 - **`Investment`**: Calcula en dominio `netProfit` (`currentValue.subtract(investedAmount)`) y `roiPercentage`.
 
@@ -27,14 +27,14 @@ Proporcionar una plataforma integral de gestión de patrimonio personal e invers
 ```mermaid
 sequenceDiagram
     actor User as Usuario
-    participant UI as TransactionsSection (Client)
+    participant UI as /movimientos - TransactionsSection (Client)
     participant SA as createTransactionAction (Server Action)
     participant UC as CreateTransactionUseCase
     participant VO as Money / Transaction / Account (Domain)
     participant Repo as MySqlTransactionRepository
     participant DB as MySQL 8.0 (react_nextjs_gestor_finanzas)
 
-    User->>UI: Completa modal "Nuevo Movimiento" y envía
+    User->>UI: Completa modal "Nuevo Movimiento" (selecciona Banco + •••• últimos dígitos) y envía
     UI->>SA: FormData (accountId, categoryId, type, amountDecimal, concept)
     SA->>SA: Valida esquema con Zod
     SA->>VO: Money.fromDecimal(amountDecimal, 'EUR')
@@ -44,8 +44,8 @@ sequenceDiagram
     UC->>Repo: createWithAccountBalanceUpdate(transaction, updatedAccount)
     Repo->>DB: BEGIN -> INSERT transactions -> UPDATE accounts -> COMMIT
     DB-->>Repo: OK
-    SA->>UI: revalidatePath('/') + { success: true }
-    UI-->>User: Dashboard, KPIs, Gráficos y Saldo actualizados en tiempo real
+    SA->>UI: revalidatePath('/') + revalidatePath('/movimientos') + { success: true }
+    UI-->>User: Movimientos y saldos actualizados en tiempo real
 ```
 
 ## 5. Infraestructura y Persistencia
@@ -55,3 +55,5 @@ sequenceDiagram
 
 ## 6. Historial Incremental de Cambios
 - **2026-10-18**: Implementación completa del MVP (Docker MySQL 8.0, Dominio con `Money`, Casos de Uso, Repositorios MySQL, Fake Login, Dashboard y Gráficos Recharts).
+- **2026-10-18**: Separación de Movimientos en la ruta dedicada `/movimientos`, incorporación de `accountNumber` y `lastFourDigits` en el selector de cuenta bancaria al crear movimientos, y componente `Footer` con copyright del año actual y Rubén Muñoz.
+- **2026-10-18**: Tarjetas de cuentas bancarias clicables en el panel principal (`AccountsSection`) que redirigen a `/movimientos?accountId=<id>` con la cuenta preseleccionada en el filtro, en el modal de creación y mostrando el saldo actual de la cuenta seleccionada en `TransactionsSection`.

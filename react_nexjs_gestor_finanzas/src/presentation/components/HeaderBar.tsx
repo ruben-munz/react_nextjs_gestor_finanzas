@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   Landmark,
   LineChart,
@@ -24,7 +25,7 @@ export function HeaderBar({ username }: HeaderBarProps) {
     <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
         {/* Marca / Logo */}
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 transition hover:opacity-90">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-500/20">
             <Landmark className="h-5 w-5" />
           </div>
@@ -41,45 +42,45 @@ export function HeaderBar({ username }: HeaderBarProps) {
               Patrimonio Personal y Cartera de Inversión
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Navegación rápida */}
-        <nav className="hidden items-center gap-1 md:flex">
-          <a
-            href="#resumen"
+        <nav className="flex flex-wrap items-center gap-1">
+          <Link
+            href="/#resumen"
             className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
           >
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
             Resumen
-          </a>
-          <a
-            href="#graficos"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
+          </Link>
+          <Link
+            href="/#graficos"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white md:flex"
           >
             <PieChart className="h-3.5 w-3.5 text-blue-400" />
             Gráficos
-          </a>
-          <a
-            href="#cuentas"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
+          </Link>
+          <Link
+            href="/#cuentas"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white md:flex"
           >
             <Wallet className="h-3.5 w-3.5 text-indigo-400" />
             Mis Cuentas
-          </a>
-          <a
-            href="#inversiones"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
+          </Link>
+          <Link
+            href="/#inversiones"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white md:flex"
           >
             <LineChart className="h-3.5 w-3.5 text-amber-400" />
             Inversiones
-          </a>
-          <a
-            href="#movimientos"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/70 hover:text-white"
+          </Link>
+          <Link
+            href="/movimientos"
+            className="flex items-center gap-1.5 rounded-lg border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-300 transition hover:border-purple-500/60 hover:bg-purple-500/20 hover:text-white"
           >
             <ReceiptText className="h-3.5 w-3.5 text-purple-400" />
             Movimientos
-          </a>
+          </Link>
         </nav>
 
         {/* Estado de sesión + Cerrar sesión */}

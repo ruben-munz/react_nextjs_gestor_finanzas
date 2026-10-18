@@ -58,6 +58,17 @@ async function runSeed() {
       }
     }
 
+    // Asegurar columna account_number si la tabla accounts existía de una versión previa
+    try {
+      await connection.query(
+        "ALTER TABLE accounts ADD COLUMN account_number VARCHAR(34) NOT NULL DEFAULT 'ES0000000000000000000000' AFTER bank"
+      );
+    } catch (err) {
+      if (err && err.code !== 'ER_DUP_FIELDNAME') {
+        throw err;
+      }
+    }
+
     console.log('[db:seed] Insertando datos semilla de los últimos 6 meses (02-seed.sql)...');
     await connection.query(seedSql);
 

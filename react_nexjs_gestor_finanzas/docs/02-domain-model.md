@@ -28,6 +28,8 @@ classDiagram
         +string name
         +AccountType type
         +string bank
+        +string accountNumber
+        +string lastFourDigits
         +Money balance
         +credit(amount: Money) Account
         +debit(amount: Money) Account
@@ -86,6 +88,7 @@ erDiagram
         varchar(100) name
         enum type "CHECKING | SAVINGS | CASH"
         varchar(100) bank
+        varchar(34) account_number "IBAN / Numero de cuenta"
         bigint balance_cents "Importe en centimos"
         char(3) currency "EUR"
         varchar(30) color

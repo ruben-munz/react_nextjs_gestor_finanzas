@@ -80,12 +80,15 @@ describe('Financial Domain Modeling - Money Value Object & Entities', () => {
       name: 'Cuenta Nómina',
       type: 'CHECKING',
       bank: 'BBVA',
+      accountNumber: 'ES91 0182 1234 5601 2345 4821',
       balance: Money.fromMinorUnits(485050, 'EUR'),
       color: '#2563eb',
       icon: 'Landmark',
     });
 
+    expect(account.lastFourDigits).toBe('4821');
     const afterExpense = account.debit(Money.fromMinorUnits(5050, 'EUR'));
     expect(afterExpense.balance.minorUnits).toBe(480000);
+    expect(afterExpense.lastFourDigits).toBe('4821');
   });
 });

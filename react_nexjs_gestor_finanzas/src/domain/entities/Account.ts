@@ -7,6 +7,7 @@ export interface AccountProps {
   name: string;
   type: AccountType;
   bank: string;
+  accountNumber?: string;
   balance: Money;
   color: string;
   icon: string;
@@ -53,6 +54,18 @@ export class Account {
 
   get bank(): string {
     return this.props.bank;
+  }
+
+  get accountNumber(): string {
+    return this.props.accountNumber ?? 'ES00 0000 0000 0000 0000 0000';
+  }
+
+  get lastFourDigits(): string {
+    const digitsOnly = this.accountNumber.replace(/\D/g, '');
+    if (digitsOnly.length >= 4) {
+      return digitsOnly.slice(-4);
+    }
+    return digitsOnly.padStart(4, '0');
   }
 
   get balance(): Money {

@@ -9,6 +9,8 @@ export interface AccountDTO {
   type: AccountType;
   typeLabel: string;
   bank: string;
+  accountNumber: string;
+  lastFourDigits: string;
   balanceCents: number;
   balanceDecimal: number;
   balanceFormatted: string;

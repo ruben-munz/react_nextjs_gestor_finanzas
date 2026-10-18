@@ -12,10 +12,10 @@ DELETE FROM categories;
 DELETE FROM accounts;
 
 -- 1. CUENTAS BANCARIAS Y EFECTIVO (3 Cuentas)
-INSERT INTO accounts (id, name, type, bank, balance_cents, currency, color, icon) VALUES
-  ('acc-nomina-01', 'Cuenta Nómina Principal', 'CHECKING', 'BBVA', 485050, 'EUR', '#2563eb', 'Landmark'),
-  ('acc-ahorro-02', 'Cuenta Ahorro Remunerada', 'SAVINGS', 'MyInvestor', 1520000, 'EUR', '#10b981', 'PiggyBank'),
-  ('acc-efectivo-03', 'Efectivo y Tarjeta Prepago', 'CASH', 'Revolut / Efectivo', 32075, 'EUR', '#8b5cf6', 'Wallet');
+INSERT INTO accounts (id, name, type, bank, account_number, balance_cents, currency, color, icon) VALUES
+  ('acc-nomina-01', 'Cuenta Nómina Principal', 'CHECKING', 'BBVA', 'ES91 0182 1234 5601 2345 4821', 485050, 'EUR', '#2563eb', 'Landmark'),
+  ('acc-ahorro-02', 'Cuenta Ahorro Remunerada', 'SAVINGS', 'MyInvestor', 'ES66 1544 0001 1899 8877 9304', 1520000, 'EUR', '#10b981', 'PiggyBank'),
+  ('acc-efectivo-03', 'Efectivo y Tarjeta Prepago', 'CASH', 'Revolut / Efectivo', 'ES24 1583 0001 4200 1122 7719', 32075, 'EUR', '#8b5cf6', 'Wallet');
 
 -- 2. CATEGORÍAS DE INGRESOS Y GASTOS (10 Categorías)
 INSERT INTO categories (id, name, type, icon, monthly_budget_cents, currency) VALUES

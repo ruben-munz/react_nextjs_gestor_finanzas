@@ -4,10 +4,10 @@ import { getSessionUsername } from '../infrastructure/auth/session';
 import { makeFinancialContainer } from '../infrastructure/container';
 import { AccountsSection } from '../presentation/components/AccountsSection';
 import { FinancialChartsSection } from '../presentation/components/FinancialChartsSection';
+import { Footer } from '../presentation/components/Footer';
 import { HeaderBar } from '../presentation/components/HeaderBar';
 import { InvestmentsSection } from '../presentation/components/InvestmentsSection';
 import { KpiSummaryCards } from '../presentation/components/KpiSummaryCards';
-import { TransactionsSection } from '../presentation/components/TransactionsSection';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,24 +21,18 @@ export default async function DashboardPage() {
 
   let dashboardData;
   let accountsData;
-  let categoriesData;
   let investmentsData;
-  let transactionsData;
   let dbError: string | null = null;
 
   try {
     [
       dashboardData,
       accountsData,
-      categoriesData,
       investmentsData,
-      transactionsData,
     ] = await Promise.all([
       container.getFinancialDashboardUseCase.execute(),
       container.getAccountsUseCase.execute(),
-      container.getCategoriesUseCase.execute(),
       container.getInvestmentsUseCase.execute(),
-      container.getTransactionsUseCase.execute(),
     ]);
   } catch (error) {
     dbError =
@@ -48,11 +42,11 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
       <HeaderBar username={username} />
 
-      <main className="mx-auto max-w-7xl space-y-10 px-4 py-8 sm:px-6 lg:px-8">
-        {dbError || !dashboardData || !accountsData || !categoriesData || !investmentsData || !transactionsData ? (
+      <main className="mx-auto w-full max-w-7xl flex-1 space-y-10 px-4 py-8 sm:px-6 lg:px-8">
+        {dbError || !dashboardData || !accountsData || !investmentsData ? (
           <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-6 text-amber-200 shadow-xl">
             <div className="flex items-start gap-3">
               <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-amber-400" />
@@ -101,20 +95,11 @@ export default async function DashboardPage() {
 
             {/* 4. Mis Inversiones (Investments) */}
             <InvestmentsSection investments={investmentsData} />
-
-            {/* 5. Mis Movimientos (Transactions) + Formulario Nuevo Movimiento */}
-            <TransactionsSection
-              transactions={transactionsData}
-              accounts={accountsData}
-              categories={categoriesData}
-            />
           </>
         )}
       </main>
 
-      <footer className="mt-16 border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        FinanzasPro MVP · Clean Architecture · Next.js App Router + TypeScript + MySQL 8.0 (`Money` Integer Cents)
-      </footer>
+      <Footer />
     </div>
   );
 }

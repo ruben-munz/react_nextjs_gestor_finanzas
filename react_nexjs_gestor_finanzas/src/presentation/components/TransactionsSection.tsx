@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   CheckCircle2,
   Filter,
+  Landmark,
   Plus,
   Search,
   Tag,
@@ -25,6 +26,7 @@ interface TransactionsSectionProps {
   transactions: TransactionDTO[];
   accounts: AccountDTO[];
   categories: CategoryDTO[];
+  initialAccountId?: string;
 }
 
 const initialActionState: CreateTransactionActionState = {};
@@ -33,12 +35,24 @@ export function TransactionsSection({
   transactions,
   accounts,
   categories,
+  initialAccountId,
 }: TransactionsSectionProps) {
+  const validInitialAccountId = useMemo(() => {
+    if (initialAccountId && accounts.some((acc) => acc.id === initialAccountId)) {
+      return initialAccountId;
+    }
+    return 'ALL';
+  }, [initialAccountId, accounts]);
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [accountFilter, setAccountFilter] = useState<string>('ALL');
+  const [accountFilter, setAccountFilter] = useState<string>(validInitialAccountId);
   const [typeFilter, setTypeFilter] = useState<'ALL' | 'INCOME' | 'EXPENSE'>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTxType, setNewTxType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
+
+  useEffect(() => {
+    setAccountFilter(validInitialAccountId);
+  }, [validInitialAccountId]);
 
   const [state, formAction, isPending] = useActionState(
     createTransactionAction,
@@ -51,6 +65,14 @@ export function TransactionsSection({
       setIsModalOpen(false);
     }
   }, [state.success, state.timestamp]);
+
+  const selectedAccount = useMemo(
+    () =>
+      accountFilter !== 'ALL'
+        ? (accounts.find((acc) => acc.id === accountFilter) ?? null)
+        : null,
+    [accounts, accountFilter]
+  );
 
   const filteredCategories = useMemo(
     () => categories.filter((c) => c.type === newTxType),
@@ -132,7 +154,7 @@ export function TransactionsSection({
             <option value="ALL">Todas las cuentas ({accounts.length})</option>
             {accounts.map((acc) => (
               <option key={acc.id} value={acc.id}>
-                {acc.name} ({acc.bank})
+                {acc.bank} (•••• {acc.lastFourDigits}) · {acc.name}
               </option>
             ))}
           </select>
@@ -175,6 +197,61 @@ export function TransactionsSection({
           </button>
         </div>
       </div>
+
+      {/* Indicador de Saldo Actual cuando hay una cuenta seleccionada */}
+      {selectedAccount && (
+        <div className="relative mb-4 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/95 p-4 shadow-lg sm:px-6">
+          <div
+            className="absolute inset-y-0 left-0 w-1.5"
+            style={{ backgroundColor: selectedAccount.color }}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-4 pl-2">
+            <div className="flex items-center gap-3.5">
+              <div
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-md"
+                style={{ backgroundColor: selectedAccount.color }}
+              >
+                <Landmark className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-md bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-300">
+                    {selectedAccount.typeLabel}
+                  </span>
+                  <h3 className="text-sm font-bold text-white sm:text-base">
+                    {selectedAccount.name}
+                  </h3>
+                </div>
+                <p className="mt-0.5 text-xs text-slate-400">
+                  {selectedAccount.bank} ·{' '}
+                  <span className="font-mono text-slate-300">
+                    •••• {selectedAccount.lastFourDigits}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  Saldo actual en cuenta
+                </span>
+                <span className="text-xl font-extrabold tracking-tight text-emerald-400 sm:text-2xl">
+                  {selectedAccount.balanceFormatted}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAccountFilter('ALL')}
+                className="cursor-pointer rounded-xl border border-slate-700/80 bg-slate-950 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-slate-600 hover:bg-slate-800 hover:text-white"
+                title="Quitar filtro de cuenta"
+              >
+                Ver todas
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabla de Movimientos */}
       <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/95 shadow-lg">
@@ -331,12 +408,16 @@ export function TransactionsSection({
                   <select
                     name="accountId"
                     required
-                    defaultValue={accounts[0]?.id ?? ''}
+                    defaultValue={
+                      accountFilter !== 'ALL'
+                        ? accountFilter
+                        : (accounts[0]?.id ?? '')
+                    }
                     className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none"
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
-                        {acc.name} ({acc.balanceFormatted})
+                        {acc.bank} (•••• {acc.lastFourDigits}) — {acc.name} ({acc.balanceFormatted})
                       </option>
                     ))}
                   </select>

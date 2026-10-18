@@ -13,6 +13,21 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 <!-- CHANGELOG_ENTRIES_START -->
 
+## [2026-10-18] - Visualización del saldo actual al seleccionar una cuenta en /movimientos
+### Added
+- [Presentation] Añadida tarjeta resumen de cuenta en TransactionsSection que muestra el saldo actual en tiempo real cuando hay una cuenta seleccionada en el filtro
+
+## [2026-10-18] - Tarjetas de cuentas clicables con filtrado directo en /movimientos
+### Changed
+- [Presentation] Convertidas las tarjetas de cuentas en AccountsSection en enlaces a /movimientos?accountId=<id>
+- [Presentation] Soportado searchParams.accountId en MovimientosPage e initialAccountId en TransactionsSection para preseleccionar la cuenta en el filtro y en el modal de nuevo movimiento
+
+## [2026-10-18] - Página dedicada de Movimientos, selector de cuenta con banco y últimos dígitos, y copyright en Footer
+### Changed
+- [Presentation] Creada ruta dedicada /movimientos (src/app/movimientos/page.tsx) y retirado TransactionsSection de la página principal (/)
+- [Presentation] Creado componente Footer (src/presentation/components/Footer.tsx) con copyright del año actual y Rubén Muñoz
+- [Domain/Application/Infrastructure/UI] Añadido accountNumber y lastFourDigits en Account, AccountDTO, esquema MySQL (01-schema.sql y 02-seed.sql) y desplegable de cuenta al crear un movimiento
+
 ## [2026-10-18] - Implementación completa del MVP de Gestor de Finanzas Personales e Inversiones
 ### Added
 - [Infrastructure] Creado docker-compose.yml (contenedor react_nextjs_gestor_finanzas con MySQL 8.0), .env, .env.example, esquema SQL (01-schema.sql) y seed de 6 meses (02-seed.sql + scripts/seed.mjs)

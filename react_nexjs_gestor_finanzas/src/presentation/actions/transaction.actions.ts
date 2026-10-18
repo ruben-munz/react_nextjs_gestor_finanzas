@@ -65,6 +65,7 @@ export async function createTransactionAction(
     });
 
     revalidatePath('/');
+    revalidatePath('/movimientos');
     return {
       success: true,
       timestamp: Date.now(),
